@@ -32,14 +32,23 @@ Muestra la lista de jugadores con su ID, nombre, nacionalidad y club, y permite 
 ## 🛠️ Estructura del proyecto (modular)
 
 Cahrs79-PES-6-GDB-Mapper/
+
 ├── constants.py       # Constantes del OF (bloques, claves, offsets)
+
 ├── optionfile.py      # Clase para cargar y descifrar el archivo
+
 ├── club_db.py         # Lectura de nombres de clubes
+
 ├── squad_detector.py  # Detección automática de plantillas de clubes
+
 ├── player.py          # Clase que representa a un jugador
+
 ├── player_db.py       # Carga de todos los jugadores y mapeo de clubes
+
 ├── gui.py             # Interfaz gráfica (Tkinter)
+
 ├── main.py            # Punto de entrada
+
 └── README.md          # Este archivo
 
 ## 📝 Notas importantes
