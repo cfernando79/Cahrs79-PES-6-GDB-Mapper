@@ -3,29 +3,29 @@ import constants
 from player import Player
 
 class PlayerDatabase:
-    def __init__(self, of, club_db, slot23, slot32):
+    def __init__(self, of, club_db):
         self.players = []
-        self._load_players(of, club_db, slot23, slot32)
+        self._load_players(of, club_db)
 
-    def _build_club_map(self, data, slot23, slot32):
+    def _build_club_map(self, data):
+        """
+        Construye un diccionario {id_jugador: índice_club} usando las plantillas
+        de los 140 clubes. Asume que cada club tiene 32 jugadores (64 bytes)
+        y que el offset base es CLUBS_PLAYERS_RELINK_OFFSET.
+        """
         player_club = {}
-        for club in range(64):
-            base = slot23 + club * 46
-            for pos in range(23):
-                off = base + pos*2
-                pid = data[off] | (data[off+1] << 8)
-                if pid and pid not in player_club:
-                    player_club[pid] = club
-        for club in range(64, constants.MAX_CLUBS):
-            base = slot32 + (club - 64) * 64
-            for pos in range(32):
-                off = base + pos*2
-                pid = data[off] | (data[off+1] << 8)
-                if pid and pid not in player_club:
-                    player_club[pid] = club
+        for club_idx in range(constants.MAX_CLUBS):
+            base = constants.CLUBS_PLAYERS_RELINK_OFFSET + club_idx * constants.CLUB_SLOT_SIZE
+            for pos in range(constants.CLUB_PLAYER_COUNT):
+                off = base + pos * 2
+                if off + 1 < len(data):
+                    pid = data[off] | (data[off+1] << 8)
+                    if pid != 0 and pid not in player_club:
+                        player_club[pid] = club_idx
         return player_club
 
     def _read_nations(self):
+        # Lista fija de nacionalidades (se puede ampliar)
         return [
             "Austria", "Belgium", "Bulgaria", "Croatia", "Czech Republic",
             "Denmark", "England", "Finland", "France", "Germany", "Greece",
@@ -50,6 +50,7 @@ class PlayerDatabase:
         ]
 
     def _decode_name(self, name_bytes):
+        # Buscar terminador nulo (00 00) en UTF-16LE
         for i in range(0, len(name_bytes), 2):
             if i+1 < len(name_bytes) and name_bytes[i] == 0 and name_bytes[i+1] == 0:
                 name_bytes = name_bytes[:i]
@@ -57,12 +58,12 @@ class PlayerDatabase:
         try:
             return name_bytes.decode('utf-16le').strip()
         except:
-            return name_bytes.decode('latin-1', errors='ignore').strip()
+            return name_bytes.decode('latin-1', errors='replace').strip()
 
-    def _load_players(self, of, club_db, slot23, slot32):
+    def _load_players(self, of, club_db):
         data = of.data
         nations = self._read_nations()
-        player_club_map = self._build_club_map(data, slot23, slot32)
+        player_club_map = self._build_club_map(data)
 
         addr = constants.PLAYER_START + constants.PLAYER_SIZE
         max_end = min(len(data), constants.PLAYER_START + constants.OF_BLOCK_SIZE[4])
@@ -76,20 +77,3 @@ class PlayerDatabase:
             self.players.append(Player(pid, name, nation, club_idx))
             addr += constants.PLAYER_SIZE
             pid += 1
-
-    def filter(self, col, value):
-        value = value.lower()
-        if col == "ID":
-            return [p for p in self.players if value in str(p.id)]
-        elif col == "Name":
-            return [p for p in self.players if value in p.name.lower()]
-        elif col == "Nationality":
-            return [p for p in self.players if value in p.nationality.lower()]
-        elif col == "Club":
-            # Necesita club_db para obtener el nombre; pasarlo como argumento o guardar referencia
-            # Por simplicidad, asumimos que se llama con club_db externo (lo haremos en gui)
-            # Mejor devolver todos y filtrar después en la GUI. O podemos pasar club_db aquí.
-            # Por ahora, devolvemos todos (lo arreglamos en la GUI)
-            return self.players[:]
-        else:
-            return self.players[:]
