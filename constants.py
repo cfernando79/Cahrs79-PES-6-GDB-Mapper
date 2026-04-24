@@ -1,7 +1,9 @@
 # constants.py
+# Bloques del archivo OF
 OF_BLOCK = [12, 5144, 9544, 14288, 37116, 657956, 751472, 763804, 911144, 1170520]
 OF_BLOCK_SIZE = [4844, 1268, 4730, 22816, 620000, 93501, 12320, 147328, 259364, 21032]
 
+# Claves de descifrado (inmutables)
 OF_KEY = [
     2058578050, 2058578078, 2058578109, 2058578079, 2058578084, 2058578115,
     2058578073, 2058578105, 2058578068, 2058578101, 2058578095, 2058578045,
@@ -101,6 +103,7 @@ OF_KEY_PC = [
 ]
 
 # =============================================
+# Estructura de jugador
 
 PLAYER_START = 37116
 PLAYER_SIZE = 124
@@ -108,6 +111,13 @@ NAME_OFFSET = 0
 NAME_LEN = 32
 NATION_OFFSET = 112
 
+# Estructura de clubes
+
 CLUB_START = 751472
 CLUB_SIZE = 88
 MAX_CLUBS = 140
+
+# Plantillas de clubes (equipos)
+CLUBS_PLAYERS_RELINK_OFFSET = 667730   # dirección base de las plantillas de clubes
+CLUB_PLAYER_COUNT = 32                 # cada club tiene 32 jugadores (64 bytes)
+CLUB_SLOT_SIZE = 64                    # bytes por club
