@@ -8,7 +8,7 @@ Muestra la lista de jugadores con su ID, nombre, nacionalidad y club, y permite 
 - Carga y descifra automáticamente el archivo `KONAMI-WIN32PES6OPT` (sin extensión).
 - Detecta las plantillas de los clubes sin necesidad de conocer nombres de equipos ni IDs de jugadores específicos.
 - Interfaz con tabla ordenable y barras de desplazamiento.
-- Filtro en tiempo real por ID, nombre, nacionalidad o club (EN PROCESO DE MEJORAR, NO CARGA CORRECTAMENTE).
+- Filtro en tiempo real por ID, nombre, nacionalidad o club.
 
 ## 🖥️ Requisitos
 
@@ -38,8 +38,6 @@ Cahrs79-PES-6-GDB-Mapper/
 ├── optionfile.py      # Clase para cargar y descifrar el archivo
 
 ├── club_db.py         # Lectura de nombres de clubes
-
-├── squad_detector.py  # Detección automática de plantillas de clubes
 
 ├── player.py          # Clase que representa a un jugador
 
